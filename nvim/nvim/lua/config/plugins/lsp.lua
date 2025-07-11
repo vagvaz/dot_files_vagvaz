@@ -193,6 +193,8 @@ return
     })
     require('mason-tool-installer').setup({ ensure_installed = tools_ensure_installed })
     require('mason-lspconfig').setup {
+      ensured_installed = { servers },
+      automatic_installation = false,
       handlers = {
         function(server_name)
           local server_cfg = servers[server_name] or {}
