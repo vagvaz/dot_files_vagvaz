@@ -47,5 +47,6 @@ return {
       vim.keymap.set('n', 'gp', '<cmd>Lspsaga peek_definition<CR>', { desc = '[G]o [P]eek definition' })
     end,
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    after = 'nvim-lspconfig',
   },
 }

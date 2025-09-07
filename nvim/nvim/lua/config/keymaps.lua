@@ -78,3 +78,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Start Navigating' })
+
+-- LSP keybindings
+vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
+vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { desc = 'Goto Implementation' })
+vim.keymap.set('n', 'go', vim.lsp.buf.type_definition, { desc = 'Goto Type Definition' })
+vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'Goto References' })
+vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, { desc = 'Signature Help' })
+vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, { desc = 'Rename' })
+vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, { desc = 'Code Action' })
+vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Open Diagnostic Float' })
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous Diagnostic' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
