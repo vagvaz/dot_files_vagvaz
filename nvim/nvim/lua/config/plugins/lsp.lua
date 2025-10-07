@@ -7,12 +7,9 @@ return
         "williamboman/mason.nvim",
         config = true,
       },
-      {
-        "williamboman/mason-lspconfig.nvim",
-      },
-      {
-        'WhoIsSethDaniel/mason-tool-installer.nvim'
-      },
+       {
+         'WhoIsSethDaniel/mason-tool-installer.nvim'
+       },
       { 'saghen/blink.cmp' },
       {
         "folke/lazydev.nvim",
@@ -129,10 +126,6 @@ return
       -- setup servers
       -- local capabilities =
       require('mason').setup {}
-      require('mason-lspconfig').setup {
-        automatic_installation = false,
-        automatic_enable = false,
-      }
     end,
 
   },

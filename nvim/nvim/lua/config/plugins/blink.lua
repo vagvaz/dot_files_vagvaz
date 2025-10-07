@@ -24,11 +24,16 @@ return {
       nerd_font_variant = 'mono'
     },
     signature = { enabled = true },
+    documentation = { auto_show = true, auto_show_delay_ms = 300 },
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
       default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
   },
+  snippets = { preset = 'default'},
+
+  -- Experimental signature help support
+  signature = { enabled = true },
   opts_extend = { "sources.default" }
 }
