@@ -22,7 +22,7 @@
         "memory",
         "temperature",
         "hyprland/language",
-     //   "battery",
+        "battery",
         "clock",
         "tray",
     ],
