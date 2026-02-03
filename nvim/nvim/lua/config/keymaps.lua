@@ -92,3 +92,11 @@ vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, { desc = 'Code Action' })
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Open Diagnostic Float' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous Diagnostic' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
+
+-- Folding keymaps
+vim.keymap.set('n', 'za', 'za', { desc = 'Toggle fold' })
+vim.keymap.set('n', 'zc', 'zc', { desc = 'Close fold' })
+vim.keymap.set('n', 'zo', 'zo', { desc = 'Open fold' })
+vim.keymap.set('n', 'zR', 'zR', { desc = 'Open all folds' })
+vim.keymap.set('n', 'zM', 'zM', { desc = 'Close all folds' })
+vim.keymap.set('v', 'zf', 'zf', { desc = 'Create fold' })

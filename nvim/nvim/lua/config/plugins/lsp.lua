@@ -1,5 +1,4 @@
-return
-{
+return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -117,15 +116,126 @@ return
           end
 
           vim.keymap.set('n', '<leader>cf', function() vim.lsp.buf.format() end, { desc = '[F]ormat file' })
-          vim.keymap.set('n', '<leader>;', function() vim.lsp.buf.code_action() end, { desc = '[C]ode [A]ction' })
+          --vim.keymap.set('n', '<leader>;', function() vim.lsp.buf.code_action() end, { desc = '[C]ode [A]ction' })
         end,
       }) -- end of LspAttach
-      -- vim.api.nvim_create_autocmd('LspAttach', {
-      --   callback = function(args)
-      --     local client = vim.lsp.get_client_by_id(args.data.client_id):
-      -- setup servers
-      -- local capabilities =
+      -- Setup LSP servers for specific filetypes
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('LspAutoStart', { clear = true }),
+        pattern = { 'python', 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto', 'lua' },
+        callback = function(args)
+          local filetype = args.match
+          local server_to_start = nil
+          
+          if filetype == 'python' then
+            server_to_start = 'pylsp'
+          elseif filetype == 'c' or filetype == 'cpp' or filetype == 'objc' or filetype == 'objcpp' or filetype == 'cuda' or filetype == 'proto' then
+            server_to_start = 'clangd'
+          elseif filetype == 'lua' then
+            server_to_start = 'lua_ls'
+          end
+          
+          if server_to_start then
+            local clients = vim.lsp.get_clients({ bufnr = args.buf })
+            local server_running = false
+            for _, client in ipairs(clients) do
+              if client.name == server_to_start then
+                server_running = true
+                break
+              end
+            end
+            
+            if not server_running then
+              vim.lsp.start({
+                name = server_to_start,
+                cmd = vim.lsp.config[server_to_start].cmd,
+                filetypes = vim.lsp.config[server_to_start].filetypes,
+                root_dir = vim.lsp.config[server_to_start].root_dir or vim.fn.getcwd(),
+                capabilities = vim.lsp.config[server_to_start].capabilities,
+                settings = vim.lsp.config[server_to_start].settings,
+              })
+            end
+          end
+        end,
+      })
+      
       require('mason').setup {}
+      
+      local function file_exists(path)
+        return vim.uv.fs_stat(path) ~= nil
+      end
+      
+      local function find_root_with_marker(start_path, marker)
+        local path = vim.fn.fnamemodify(start_path, ':p:h')
+        while path and path ~= '/' do
+          if file_exists(path .. '/' .. marker) then
+            return path
+          end
+          local parent = vim.fn.fnamemodify(path, ':h')
+          if parent == path then
+            break
+          end
+          path = parent
+        end
+        return nil
+      end
+      
+      local function is_lsp_running(server_name)
+        local clients = vim.lsp.get_clients()
+        for _, client in ipairs(clients) do
+          if client.name == server_name then
+            return true
+          end
+        end
+        return false
+      end
+      
+      local function start_lsp_if_configured(server_name, bufnr)
+        if not vim.lsp.config[server_name] then
+          return
+        end
+        
+        if is_lsp_running(server_name) then
+          return
+        end
+        
+        local config = vim.lsp.config[server_name]
+        local root_dir = vim.fn.getcwd()
+        
+        if config.root_dir then
+          root_dir = config.root_dir(vim.fn.expand('%:p'))
+        end
+        
+        vim.lsp.start({
+          name = server_name,
+          cmd = config.cmd,
+          filetypes = config.filetypes,
+          root_dir = root_dir,
+          capabilities = config.capabilities,
+          settings = config.settings,
+        })
+      end
+      
+      vim.api.nvim_create_autocmd('BufEnter', {
+        group = vim.api.nvim_create_augroup('LspProjectDetection', { clear = true }),
+        callback = function(args)
+          local bufname = vim.fn.expand('%:p')
+          if bufname == '' then
+            return
+          end
+          
+          local has_cmake = find_root_with_marker(bufname, 'CMakeLists.txt')
+          if has_cmake then
+            start_lsp_if_configured('clangd', args.buf)
+            start_lsp_if_configured('cmake-language-server', args.buf)
+          end
+          
+          local has_pyproject = find_root_with_marker(bufname, 'pyproject.toml')
+          if has_pyproject then
+            start_lsp_if_configured('pylsp', args.buf)
+          end
+        end,
+      })
     end,
 
   },

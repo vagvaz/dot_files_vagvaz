@@ -247,6 +247,13 @@ local lsp_on_attach = function(client, bufnr)
 
     keymap('n', '<leader>lL', '<cmd>lua vim.lsp.codelens.run()<CR>', { desc = '[LSP] code lens' })
   end
+
+  -- Folding
+  if client.server_capabilities.foldingRangeProvider then
+    vim.opt_local.foldmethod = 'expr'
+    vim.opt_local.foldexpr = 'v:lua.vim.lsp.foldexpr(v:lnum)'
+    vim.opt_local.foldlevel = 99
+  end
 end
 
 return { on_attach = lsp_on_attach }

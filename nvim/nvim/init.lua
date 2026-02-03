@@ -7,7 +7,8 @@ require("config.options")
 require("config.keymaps")
 
 vim.lsp.enable({
---  'pyright',
-  'clangd',
+  'lua_ls',
   'pylsp',
+  'clangd',
+ --  'pyright',
 })

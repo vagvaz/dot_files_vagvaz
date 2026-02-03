@@ -11,18 +11,12 @@ return {
   'mfussenegger/nvim-dap',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
-    -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
-
-    -- Required dependency for nvim-dap-ui
     'nvim-neotest/nvim-nio',
-
-    -- Installs the debug adapters for you
     'williamboman/mason.nvim',
     'jay-babu/mason-nvim-dap.nvim',
-    -- 'nvimdev/lspsaga.nvim',
-    -- Add your own debuggers here
-    -- 'leoluz/nvim-dap-go',
+    'theHamsta/nvim-dap-virtual-text',
+    'leoluz/nvim-dap-go',
     'mfussenegger/nvim-dap-python',
   },
   keys = function(_, keys)
@@ -63,11 +57,11 @@ return {
       -- You'll need to check that you have the required things installed
       -- online, please don't ask me how to install them :)
       ensure_installed = {
-        -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
         'debugpy',
         'cpptools',
-
+        'java-debug-adapter',
+        'java-test',
       },
     }
 
@@ -96,16 +90,115 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
+
+    require('nvim-dap-virtual-text').setup {
+      enabled = true,
+      enabled_commands = true,
+      highlight_changed_variables = true,
+      highlight_new_as_changed = false,
+      show_stop_reason = true,
+      commented = false,
+      only_first_definition = true,
+      all_references = false,
+      filter_references_pattern = '<module',
+      virt_text_pos = 'eol',
+      all_frames = false,
+      virt_lines = false,
+      virt_text_win_col = nil,
+    }
+
     local dap_python = require 'dap-python'
-    local path = 'python' -- need to use venv with debugpy~/.local/share/nvim/mason/packages/debugpy/venv/bin/python'
+    local path = 'python'
     dap_python.setup(path)
-    -- Install golang specific config
-    -- require('dap-go').setup {
-    --   delve = {
-    --     -- On Windows delve must be run attached or it crashes.
-    --     -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
-    --     detached = vim.fn.has 'win32' == 0,
-    --   },
-    -- }
+
+    require('dap-go').setup {
+      delve = {
+        detached = vim.fn.has 'win32' == 0,
+      },
+    }
+
+    dap.adapters.cppdbg = {
+      id = 'cppdbg',
+      type = 'executable',
+      command = vim.fn.stdpath('data') .. '/mason/bin/OpenDebugAD7',
+    }
+
+    dap.configurations.cpp = {
+      {
+        name = 'Launch file',
+        type = 'cppdbg',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        setupCommands = {
+          {
+            text = '-enable-pretty-printing',
+            description = 'enable pretty printing',
+            ignoreFailures = false,
+          },
+        },
+      },
+      {
+        name = 'Attach to gdbserver :1234',
+        type = 'cppdbg',
+        request = 'launch',
+        MIMode = 'gdb',
+        miDebuggerServerAddress = 'localhost:1234',
+        miDebuggerPath = '/usr/bin/gdb',
+        cwd = '${workspaceFolder}',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        setupCommands = {
+          {
+            text = '-enable-pretty-printing',
+            description = 'enable pretty printing',
+            ignoreFailures = false,
+          },
+        },
+      },
+    }
+
+    dap.configurations.c = dap.configurations.cpp
+
+    dap.adapters.java = {
+      type = 'server',
+      host = '127.0.0.1',
+      port = 5005,
+    }
+
+    dap.configurations.java = {
+      {
+        type = 'java',
+        request = 'launch',
+        name = 'Launch Java Program',
+        cwd = '${workspaceFolder}',
+        mainClass = function()
+          return vim.fn.input('Main class: ', '', 'file')
+        end,
+        projectName = function()
+          return vim.fn.input('Project name (optional): ')
+        end,
+        vmArgs = function()
+          return vim.fn.input('VM arguments (optional): ')
+        end,
+        noDebug = false,
+        console = 'integratedTerminal',
+      },
+      {
+        type = 'java',
+        request = 'attach',
+        name = 'Attach to Java Process',
+        hostName = function()
+          return vim.fn.input('Host: ', '127.0.0.1')
+        end,
+        port = function()
+          return tonumber(vim.fn.input('Port: ', '5005'))
+        end,
+      },
+    }
   end,
 }

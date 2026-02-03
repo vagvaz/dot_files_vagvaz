@@ -4,6 +4,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+
     dependencies = {
       {
         'nvim-treesitter/nvim-treesitter-context',
@@ -30,6 +31,17 @@ return {
       },
     },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    init = function()
+      -- Set up treesitter-based folding for supported filetypes
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'python', 'c', 'cpp', 'lua' },
+        callback = function()
+          vim.opt_local.foldmethod = 'expr'
+          vim.opt_local.foldexpr = 'nvim_treesitter#foldexpr()'
+          vim.opt_local.foldenable = true
+        end,
+      })
+    end,
     opts = {
       ensure_installed = { 'bash', 'c', 'cpp', 'python', 'yaml', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'sql', 'go' },
       -- Autoinstall languages that are not installed
@@ -41,14 +53,8 @@ return {
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      disable = function(lang, buf)
-        local max_filesize = 100 * 1024
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats.size > max_filesize then
-          return true
-        end
-      end,
       indent = { enable = true, disable = { 'ruby' } },
+      fold = { enable = true },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:

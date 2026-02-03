@@ -47,3 +47,8 @@ vim.opt.scrolloff = 4
 vim.opt.colorcolumn = '100'
 vim.opt.updatetime = 50
 
+-- Folding configuration - set globally as fallback, overridden by treesitter for supported filetypes
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+
