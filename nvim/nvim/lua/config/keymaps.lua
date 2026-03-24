@@ -30,7 +30,13 @@ vim.keymap.set('v', '<leader>d', '"_d')
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>q', function()
+  if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
+    vim.cmd('cclose')
+  else
+    vim.cmd('copen')
+  end
+end, { desc = 'Toggle [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -81,14 +87,9 @@ vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Start Navigating' })
 
 -- LSP keybindings
 vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
-vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
-vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { desc = 'Goto Implementation' })
 vim.keymap.set('n', 'go', vim.lsp.buf.type_definition, { desc = 'Goto Type Definition' })
-vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'Goto References' })
 vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, { desc = 'Signature Help' })
-vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, { desc = 'Rename' })
-vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, { desc = 'Code Action' })
+vim.keymap.set('n', '<leader>rN', vim.lsp.buf.rename, { desc = '[R]e[n]ame symbol' })
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Open Diagnostic Float' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous Diagnostic' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
@@ -100,3 +101,43 @@ vim.keymap.set('n', 'zo', 'zo', { desc = 'Open fold' })
 vim.keymap.set('n', 'zR', 'zR', { desc = 'Open all folds' })
 vim.keymap.set('n', 'zM', 'zM', { desc = 'Close all folds' })
 vim.keymap.set('v', 'zf', 'zf', { desc = 'Create fold' })
+
+-- AI Features Toggle
+local ai_state = { enabled = true }
+
+local function set_blink_sources(use_ai)
+  local ok, blink = pcall(require, 'blink.cmp')
+  if not ok then return end
+
+  local default_sources = { 'lsp', 'path', 'snippets', 'buffer' }
+  if use_ai then table.insert(default_sources, 'minuet') end
+
+  if type(blink.config) == 'table'
+      and type(blink.config.sources) == 'table'
+      and type(blink.config.sources.default) == 'table' then
+    blink.config.sources.default = default_sources
+    return
+  end
+
+  if type(blink.setup) == 'function' then
+    pcall(blink.setup, { sources = { default = default_sources } })
+  end
+end
+
+-- Disable ALL AI features
+vim.keymap.set('n', '<leader>off', function()
+  pcall(function() require('minuet').disable() end)
+  pcall(function() require('sidekick.nes').disable() end)
+  pcall(function() require('sidekick.cli').close() end)
+  set_blink_sources(false)
+  ai_state.enabled = false
+  vim.notify('All AI features disabled', vim.log.levels.INFO)
+end, { desc = 'Disable all AI features' })
+
+-- Enable ALL AI features
+vim.keymap.set('n', '<leader>on', function()
+  pcall(function() require('minuet').enable() end)
+  set_blink_sources(true)
+  ai_state.enabled = true
+  vim.notify('All AI features enabled', vim.log.levels.INFO)
+end, { desc = 'Enable all AI features' })

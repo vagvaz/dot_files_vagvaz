@@ -1,43 +1,20 @@
 local capabilities = require('common_lsp')
 
-local function find_python_root(fname)
-  local util = require('lspconfig.util')
-  local markers = {
-    'pyproject.toml',
-    'setup.py',
-    'setup.cfg',
-    'requirements.txt',
-    'Pipfile',
-    '.git',
-  }
-  
-  for _, marker in ipairs(markers) do
-    local root = util.root_pattern(marker)(fname)
-    if root then
-      return root
-    end
-  end
-  
-  return vim.fn.getcwd()
-end
-
 return {
   cmd = { "pylsp" },
   filetypes = { "python" },
   root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git" },
-  root_dir = find_python_root,
+  single_file_support = true,
   capabilities = capabilities,
   settings = {
     pylsp = {
       plugins = {
         -- Enable basic code actions
         mccabe = { enabled = false },
+        -- formatter options (disabled, using conform.nvim instead)
         autopep8 = { enabled = false },
         yapf = { enabled = false },
-        -- formatter options
-        autopep8 = { enabled = false },
-        yapf = { enabled = false },
-        -- linter options
+        -- linter options (disabled, using nvim-lint instead)
         pylint = { enabled = false },
         pyflakes = { enabled = false },
         pycodestyle = { enabled = false },
@@ -67,6 +44,9 @@ return {
         -- import sorting
         isort = { enabled = true },
         -- Enable code action providers
+        --   basedpyright = {
+        --     enabled = true,
+        --   },
         --   ruff = {
         --     enabled = true,
         --     formatEnabled = true,

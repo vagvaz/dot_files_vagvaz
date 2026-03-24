@@ -1,0 +1,44 @@
+# Ruff configuration for Python code formatting
+# https://docs.astral.sh/ruff/configuration/
+
+# Target Python version
+target-version = "py311"
+
+# Line length
+line-length = 120
+
+# Indentation using 2 spaces (matching stylua)
+indent-width = 2
+
+[format]
+# Use single quotes where possible (matching stylua's AutoPreferSingle)
+quote-style = "single"
+
+# Use spaces for indentation
+indent-style = "space"
+
+# Respects trailing commas (like stylua)
+skip-magic-trailing-comma = false
+
+# Detect automatically for line endings
+line-ending = "auto"
+
+[lint]
+# Enable recommended rules
+select = [
+  "E",  # pycodestyle errors
+  "F",  # Pyflakes
+  "I",  # isort
+  "N",  # pep8-naming
+  "W",  # pycodestyle warnings
+  "UP", # pyupgrade
+]
+
+# Ignore specific rules
+ignore = [
+  "E501",  # Line too long (handled by formatter)
+]
+
+[lint.pydocstyle]
+# Use Google-style docstrings
+convention = "google"
