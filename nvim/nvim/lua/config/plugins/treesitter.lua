@@ -11,7 +11,7 @@ return {
 
       -- List of parsers to ensure are installed
       local ensure_installed = {
-        'bash', 'c', 'cpp', 'python', 'yaml', 'diff', 'html',
+        'bash', 'c', 'cpp', 'python', 'yaml', 'diff', 'html', 'json',
         'lua', 'luadoc', 'markdown', 'markdown_inline', 'query',
         'vim', 'vimdoc', 'sql', 'go'
       }
