@@ -1,0 +1,11 @@
+{
+  "name": "web-tools",
+  "dependencies": {
+    "@mozilla/readability": "*",
+    "turndown": "*",
+    "jsdom": "*"
+  },
+  "pi": {
+    "extensions": ["./index.ts"]
+  }
+}

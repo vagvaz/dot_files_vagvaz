@@ -1,0 +1,45 @@
+{
+  "lastChangelogVersion": "0.75.4",
+  "activeProfile": "local",
+  "packages": [
+    "pi-mcp-adapter",
+    "pi-hermes-memory",
+    "@juanibiapina/pi-powerbar",
+    "@tmustier/pi-usage-extension",
+    "pi-dcp",
+    "@dreki-gg/pi-plan-mode",
+    "pi-subagents"
+  ],
+  "subagents": {
+    "agentOverrides": {
+      "explorer": {
+        "model": "ollama/qwen3.6",
+        "thinking": "low"
+      },
+      "oracle": {
+        "model": "ollama/qwen3-coder-next",
+        "thinking": "high"
+      },
+      "librarian": {
+        "model": "ollama/qwen3.6",
+        "thinking": "low"
+      },
+      "designer": {
+        "model": "ollama/qwen3.6",
+        "thinking": "medium"
+      },
+      "fixer": {
+        "model": "ollama/qwen3.6",
+        "thinking": "low"
+      },
+      "observer": {
+        "model": "ollama/qwen3.6",
+        "thinking": "low"
+      }
+    }
+  },
+  "defaultProvider": "ollama",
+  "defaultModel": "qwen3-coder-next",
+  "defaultThinkingLevel": "high",
+  "theme": "tokyonight"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "local",
+  "description": "All agents use local Ollama models",
+  "agentOverrides": {
+    "explorer": {
+      "model": "ollama/qwen3.6",
+      "thinking": "low"
+    },
+    "oracle": {
+      "model": "ollama/qwen3-coder-next",
+      "thinking": "high"
+    },
+    "librarian": {
+      "model": "ollama/qwen3.6",
+      "thinking": "low"
+    },
+    "designer": {
+      "model": "ollama/qwen3.6",
+      "thinking": "medium"
+    },
+    "fixer": {
+      "model": "ollama/qwen3.6",
+      "thinking": "low"
+    },
+    "observer": {
+      "model": "ollama/qwen3.6",
+      "thinking": "low"
+    }
+  }
+}

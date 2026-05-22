@@ -1,0 +1,30 @@
+{
+  "name": "online",
+  "description": "Agents use cloud models (OpenCode Go / OpenRouter)",
+  "agentOverrides": {
+    "explorer": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "thinking": "low"
+    },
+    "oracle": {
+      "model": "opencode-go/deepseek-v4-pro",
+      "thinking": "high"
+    },
+    "librarian": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "thinking": "low"
+    },
+    "designer": {
+      "model": "opencode-go/qwen3.6-plus",
+      "thinking": "medium"
+    },
+    "fixer": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "thinking": "low"
+    },
+    "observer": {
+      "model": "opencode-go/qwen3.6-plus",
+      "thinking": "low"
+    }
+  }
+}

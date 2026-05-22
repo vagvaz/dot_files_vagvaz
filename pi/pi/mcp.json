@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "serena": {
+      "url": "http://127.0.0.1:8765/sse",
+      "lifecycle": "lazy",
+      "idleTimeout": 10
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "lifecycle": "lazy",
+      "idleTimeout": 10
+    }
+  },
+  "settings": {
+    "idleTimeout": 10
+  }
+}

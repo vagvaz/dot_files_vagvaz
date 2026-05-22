@@ -1,0 +1,10 @@
+# Pi dotfiles — ignore generated/runtime files
+node_modules/
+package-lock.json
+*.jsonl
+sessions/
+npm/
+pi-hermes-memory/
+projects-memory/
+hermes-memory-config.json
+mcp-cache.json

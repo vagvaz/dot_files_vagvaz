@@ -1,0 +1,4 @@
+{
+  "local": "~/.pi/agent/profiles/local.json",
+  "online": "~/.pi/agent/profiles/online.json"
+}
