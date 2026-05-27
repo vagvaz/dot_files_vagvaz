@@ -2,8 +2,8 @@
   "mcpServers": {
     "serena": {
       "url": "http://127.0.0.1:8765/sse",
-      "lifecycle": "lazy",
-      "idleTimeout": 10
+      "lifecycle": "keep-alive",
+      "idleTimeout": 600
     },
     "context7": {
       "command": "npx",

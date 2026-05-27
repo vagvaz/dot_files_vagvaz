@@ -1,9 +1,10 @@
 {
-  "lastChangelogVersion": "0.75.4",
-  "activeProfile": "local",
+  "lastChangelogVersion": "0.75.5",
+  "activeProfile": "online",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-hermes-memory",
+    "npm:@juanibiapina/pi-extension-settings",
     "npm:@juanibiapina/pi-powerbar",
     "npm:@tmustier/pi-usage-extension",
     "npm:pi-dcp",
@@ -13,33 +14,33 @@
   "subagents": {
     "agentOverrides": {
       "explorer": {
-        "model": "ollama/qwen3.6",
+        "model": "opencode-go/deepseek-v4-flash",
         "thinking": "low"
       },
       "oracle": {
-        "model": "ollama/qwen3-coder-next",
+        "model": "opencode-go/deepseek-v4-pro",
         "thinking": "high"
       },
       "librarian": {
-        "model": "ollama/qwen3.6",
+        "model": "opencode-go/deepseek-v4-flash",
         "thinking": "low"
       },
       "designer": {
-        "model": "ollama/qwen3.6",
+        "model": "opencode-go/qwen3.6-plus",
         "thinking": "medium"
       },
       "fixer": {
-        "model": "ollama/qwen3.6",
+        "model": "opencode-go/deepseek-v4-flash",
         "thinking": "low"
       },
       "observer": {
-        "model": "ollama/qwen3.6",
+        "model": "opencode-go/qwen3.6-plus",
         "thinking": "low"
       }
     }
   },
-  "defaultProvider": "ollama",
-  "defaultModel": "qwen3-coder-next",
-  "defaultThinkingLevel": "high",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "deepseek-v4-flash",
+  "defaultThinkingLevel": "medium",
   "theme": "tokyonight"
 }

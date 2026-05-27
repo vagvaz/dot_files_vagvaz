@@ -22,7 +22,6 @@ DOTFILES_DIR="$SCRIPT_DIR"
 
 # Ollama provider settings
 OLLAMA_BASE_URL="${OLLAMA_BASE_URL:-http://192.168.0.179:11234/v1}"
-OLLAMA_MODELS="${OLLAMA_MODELS:-qwen3.6 qwen3-coder-next}"
 
 # MCP servers
 SERENA_URL="${SERENA_URL:-http://127.0.0.1:8765/sse}"
@@ -198,10 +197,10 @@ deploy_force() {
   ok "  $label (deployed)"
 }
 
-# models.json
+# models.json — force deploy (source of truth for model config)
 deploy_force "$DOTFILES_DIR/models.json" "$PI_AGENT_DIR/models.json" "models.json"
 
-# mcp.json
+# mcp.json — only create if missing
 deploy_if_missing "$DOTFILES_DIR/mcp.json" "$PI_AGENT_DIR/mcp.json" "mcp.json"
 
 # AGENTS.md — NEVER overwrite user's customizations, only create if missing
@@ -237,9 +236,14 @@ if [ -d "$DOTFILES_DIR/agents" ]; then
   done
 fi
 
-# ─── Step 7: Deploy extensions ──────────────────────────────────────────────
+# ─── Step 7: Deploy custom extensions ──────────────────────────────────────
 
 log "Step 7: Deploying custom extensions..."
+
+# powerbar-extra.ts
+if [ -f "$DOTFILES_DIR/extensions/powerbar-extra.ts" ]; then
+  deploy_if_missing "$DOTFILES_DIR/extensions/powerbar-extra.ts" "$PI_AGENT_DIR/extensions/powerbar-extra.ts" "extensions/powerbar-extra.ts"
+fi
 
 # profile-switcher.ts
 if [ -f "$DOTFILES_DIR/extensions/profile-switcher.ts" ]; then
@@ -251,7 +255,7 @@ if [ -f "$DOTFILES_DIR/extensions/serena-init.ts" ]; then
   deploy_if_missing "$DOTFILES_DIR/extensions/serena-init.ts" "$PI_AGENT_DIR/extensions/serena-init.ts" "extensions/serena-init.ts"
 fi
 
-# web-tools (with its own package.json and node_modules)
+# web-tools (with its own package.json)
 if [ -f "$DOTFILES_DIR/extensions/web-tools/index.ts" ]; then
   run mkdir -p "$PI_AGENT_DIR/extensions/web-tools"
 
@@ -277,10 +281,11 @@ if [ -d "$DOTFILES_DIR/extensions/provider_denylist" ]; then
   if [ -d "$PI_AGENT_DIR/extensions/provider_denylist" ]; then
     ok "  extensions/provider_denylist (already exists, skipping)"
   else
+    run mkdir -p "$PI_AGENT_DIR/extensions/provider_denylist"
     if $DRY_RUN; then
-      echo "  [dry-run] cp -r $DOTFILES_DIR/extensions/provider_denylist → $PI_AGENT_DIR/extensions/provider_denylist"
+      echo "  [dry-run] cp $DOTFILES_DIR/extensions/provider_denylist/index.ts → $PI_AGENT_DIR/extensions/provider_denylist/index.ts"
     else
-      cp -r "$DOTFILES_DIR/extensions/provider_denylist" "$PI_AGENT_DIR/extensions/"
+      cp "$DOTFILES_DIR/extensions/provider_denylist/index.ts" "$PI_AGENT_DIR/extensions/provider_denylist/index.ts"
     fi
     ok "  extensions/provider_denylist"
   fi

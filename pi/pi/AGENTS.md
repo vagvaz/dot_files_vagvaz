@@ -5,8 +5,15 @@
 - Secondary: qwen3-coder-next via Ollama
 
 ## Workflow
-- **Plan-first**: Before any implementation, present a concise plan to the user and wait for explicit consent before proceeding.
-- Use subagents for specialized tasks (explorer, oracle, librarian, designer, fixer, observer)
+- When you get a task understand if it is a coding t ask or not if not proceed to complete it, create a plan before jumping into actions
+- for coding tasks **Plan-first**: Before any implementation, present a concise plan to the user and wait for explicit consent before proceeding and try to delegate to your very capable group of agents, analyze the type of task and delegate to your available specialized subagents:
+- explorer: for code exploraton, code discovering tasks
+- fixer: for generating for small/medium size code
+- librarian: For reading documentation and understanding APIs
+- designer: For designing rich UI experiences and mockus
+- oracle: For very complex design and architecture tasks
+- When you generate a subtask give enough information to the subagent to complete  the task but keep it concise
+- try to delegate as much as possible
 - Run tests and type checks after code changes
 - Keep responses concise
 

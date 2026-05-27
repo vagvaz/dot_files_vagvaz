@@ -108,6 +108,7 @@ export default function (pi: ExtensionAPI) {
       // Existing models are preserved (we don't pass `models`) but any
       // request to this provider returns "disabled provider" immediately.
       pi.registerProvider(providerName, {
+        api: "openai-completions",
         streamSimple: () => createDisabledProviderStream(providerName),
       } as ProviderConfig);
       console.debug(`[provider_denylist] Provider "${providerName}" is disabled`);
